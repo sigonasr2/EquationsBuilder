@@ -19,7 +19,7 @@ function EditorControls(p) {
 		eqArr[id] = oldVal
 		setEquation(eqArr)
 	}}>{">"}</span>}
-	<span className="mouseover" style={{color:"maroon",position:"absolute",top:0,right:0}} onClick={()=>{
+	<span className="mouseover exit" style={{position:"absolute",top:0,right:0}} onClick={()=>{
 		var eqArr = [...equation]
 		eqArr.splice(id,1)
 		setEquation(eqArr)
@@ -77,7 +77,7 @@ function EquationOperator(p) {
 		setEquation(eqArr)
 	},[op])
 	
-	return <div style={{position:"relative",display:"inline-block",paddingLeft:"12px",paddingRight:"12px",paddingTop:"10px"}}><select value={op} defaultValue={operator} onChange={(ev)=>{setOp(ev.currentTarget.value)}}>
+	return <div style={{position:"relative",display:"inline-block",paddingLeft:"12px",paddingRight:"12px",paddingTop:"10px"}}><select style={{fontSize:"24px"}} value={op} defaultValue={operator} onChange={(ev)=>{setOp(ev.currentTarget.value)}}>
 		{["+","-","×","÷"].map((sign)=><option key={sign} value={sign}>{sign}</option>)}
 	</select>
 	<EditorControls equation={equation} setEquation={setEquation} id={id}/>
