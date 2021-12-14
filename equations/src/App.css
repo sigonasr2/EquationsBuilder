@@ -28,8 +28,22 @@
   color: #61dafb;
 }
 
-.mouseover:hover{
+.mouseover{
+	color:lightgray;
 	cursor:pointer;
+}
+
+.exit{
+	color:#FFAAAA;
+}
+
+.mouseover:hover{
+	color:black;
+	cursor:pointer;
+}
+
+.exit:hover{
+	color:maroon;
 }
 
 @keyframes App-logo-spin {
