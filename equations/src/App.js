@@ -58,7 +58,7 @@ function EquationGroup(p) {
 				setMyArr(eqArr)
 			}}>Add Operator</button>
 			<br/>
-			{arr.map((eq,i)=>Array.isArray(eq)?<EquationGroup equation={myArr} setEquation={setMyArr} data={data} arr={eq} key={i} id={i}/>:eq==="×"||eq==="-"||eq==="+"||eq==="÷"?<EquationOperator equation={myArr} setEquation={setMyArr} data={data} operator={eq} key={i} id={i}/>:<EquationValue equation={myArr} setEquation={setMyArr} data={data} val={eq} key={i} id={i}/>)}
+			{arr.map((eq,i)=>Array.isArray(eq)?<EquationGroup equation={myArr} setEquation={setMyArr} data={data} arr={eq} key={i} id={i}/>:eq==="×"||eq==="-"||eq==="+"||eq==="÷"||eq==="^"?<EquationOperator equation={myArr} setEquation={setMyArr} data={data} operator={eq} key={i} id={i}/>:<EquationValue equation={myArr} setEquation={setMyArr} data={data} val={eq} key={i} id={i}/>)}
 		</div>
 		<EditorControls equation={equation} setEquation={setEquation} id={id}/>
 	</div>
@@ -78,7 +78,7 @@ function EquationOperator(p) {
 	},[op])
 	
 	return <div style={{position:"relative",display:"inline-block",paddingLeft:"12px",paddingRight:"12px",paddingTop:"10px"}}><select style={{fontSize:"24px"}} value={op} defaultValue={operator} onChange={(ev)=>{setOp(ev.currentTarget.value)}}>
-		{["+","-","×","÷"].map((sign)=><option key={sign} value={sign}>{sign}</option>)}
+		{["+","-","×","÷","^"].map((sign)=><option key={sign} value={sign}>{sign}</option>)}
 	</select>
 	<EditorControls equation={equation} setEquation={setEquation} id={id}/>
 	</div>
@@ -117,30 +117,39 @@ function Equation(p) {
 				newEq.splice(i,1,SolveEquation(newEq[i]))
 			}
 		}
-		//Multiplication and Division first.
+		//Exponents first.
 		for (i=1;i<newEq.length-1;i++) {
-			if (newEq[i]==="×"&&newEq[i+1]!=="×"&&newEq[i+1]!=="÷"&&newEq[i+1]!=="-"&&newEq[i+1]!=="+"
-			&&newEq[i-1]!=="×"&&newEq[i-1]!=="÷"&&newEq[i-1]!=="-"&&newEq[i-1]!=="+") {
+			if (newEq[i]==="^"&&newEq[i+1]!=="×"&&newEq[i+1]!=="÷"&&newEq[i+1]!=="-"&&newEq[i+1]!=="+"&&newEq[i+1]!=="^"
+			&&newEq[i-1]!=="×"&&newEq[i-1]!=="÷"&&newEq[i-1]!=="-"&&newEq[i-1]!=="+"&&newEq[i-1]!=="^") {
+				var result = Math.pow(Number(typeof newEq[i-1]==="number"?newEq[i-1]:data[newEq[i-1]]),Number(typeof newEq[i+1]==="number"?newEq[i+1]:data[newEq[i+1]]))
+				newEq.splice(i-1,3,result)
+				i--
+			}
+		}
+		//Multiplication and Division next.
+		for (i=1;i<newEq.length-1;i++) {
+			if (newEq[i]==="×"&&newEq[i+1]!=="×"&&newEq[i+1]!=="÷"&&newEq[i+1]!=="-"&&newEq[i+1]!=="+"&&newEq[i+1]!=="^"
+			&&newEq[i-1]!=="×"&&newEq[i-1]!=="÷"&&newEq[i-1]!=="-"&&newEq[i-1]!=="+"&&newEq[i-1]!=="^") {
 				var product = Number(typeof newEq[i-1]==="number"?newEq[i-1]:data[newEq[i-1]])*Number(typeof newEq[i+1]==="number"?newEq[i+1]:data[newEq[i+1]])
 				newEq.splice(i-1,3,product)
 				i--
 			} else
-			if (newEq[i]==="÷"&&newEq[i+1]!=="×"&&newEq[i+1]!=="÷"&&newEq[i+1]!=="-"&&newEq[i+1]!=="+"
-			&&newEq[i-1]!=="×"&&newEq[i-1]!=="÷"&&newEq[i-1]!=="-"&&newEq[i-1]!=="+") {
+			if (newEq[i]==="÷"&&newEq[i+1]!=="×"&&newEq[i+1]!=="÷"&&newEq[i+1]!=="-"&&newEq[i+1]!=="+"&&newEq[i+1]!=="^"
+			&&newEq[i-1]!=="×"&&newEq[i-1]!=="÷"&&newEq[i-1]!=="-"&&newEq[i-1]!=="+"&&newEq[i-1]!=="^") {
 				var quotient = Number(typeof newEq[i-1]==="number"?newEq[i-1]:data[newEq[i-1]])/Number(typeof newEq[i+1]==="number"?newEq[i+1]:data[newEq[i+1]])
 				newEq.splice(i-1,3,quotient)
 				i--
 			}
 		}
 		for (i=1;i<newEq.length-1;i++) {
-			if (newEq[i]==="+"&&newEq[i+1]!=="×"&&newEq[i+1]!=="÷"&&newEq[i+1]!=="-"&&newEq[i+1]!=="+"
-			&&newEq[i-1]!=="×"&&newEq[i-1]!=="÷"&&newEq[i-1]!=="-"&&newEq[i-1]!=="+") {
+			if (newEq[i]==="+"&&newEq[i+1]!=="×"&&newEq[i+1]!=="÷"&&newEq[i+1]!=="-"&&newEq[i+1]!=="+"&&newEq[i+1]!=="^"
+			&&newEq[i-1]!=="×"&&newEq[i-1]!=="÷"&&newEq[i-1]!=="-"&&newEq[i-1]!=="+"&&newEq[i-1]!=="^") {
 				var sum = Number(typeof newEq[i-1]==="number"?newEq[i-1]:data[newEq[i-1]])+Number(typeof newEq[i+1]==="number"?newEq[i+1]:data[newEq[i+1]])
 				newEq.splice(i-1,3,sum)
 				i--
 			} else
-			if (newEq[i]==="-"&&newEq[i+1]!=="×"&&newEq[i+1]!=="÷"&&newEq[i+1]!=="-"&&newEq[i+1]!=="+"
-			&&newEq[i-1]!=="×"&&newEq[i-1]!=="÷"&&newEq[i-1]!=="-"&&newEq[i-1]!=="+") {
+			if (newEq[i]==="-"&&newEq[i+1]!=="×"&&newEq[i+1]!=="÷"&&newEq[i+1]!=="-"&&newEq[i+1]!=="+"&&newEq[i+1]!=="^"
+			&&newEq[i-1]!=="×"&&newEq[i-1]!=="÷"&&newEq[i-1]!=="-"&&newEq[i-1]!=="+"&&newEq[i-1]!=="^") {
 				var difference = Number(typeof newEq[i-1]==="number"?newEq[i-1]:data[newEq[i-1]])-Number(typeof newEq[i+1]==="number"?newEq[i+1]:data[newEq[i+1]])
 				newEq.splice(i-1,3,difference)
 				i--
@@ -167,7 +176,7 @@ function Equation(p) {
 		}}>Add Operator</button>
 		<br/><br/>
 		
-		{equation.map((eq,i)=>Array.isArray(eq)?<EquationGroup equation={equation} setEquation={setEquation} data={data} arr={eq} key={i} id={i}/>:eq==="×"||eq==="-"||eq==="+"||eq==="÷"?<EquationOperator equation={equation} setEquation={setEquation} data={data} operator={eq} key={i} id={i}/>:<EquationValue equation={equation} setEquation={setEquation} data={data} val={eq} key={i} id={i}/>)}
+		{equation.map((eq,i)=>Array.isArray(eq)?<EquationGroup equation={equation} setEquation={setEquation} data={data} arr={eq} key={i} id={i}/>:eq==="×"||eq==="-"||eq==="+"||eq==="÷"||eq==="^"?<EquationOperator equation={equation} setEquation={setEquation} data={data} operator={eq} key={i} id={i}/>:<EquationValue equation={equation} setEquation={setEquation} data={data} val={eq} key={i} id={i}/>)}
 		
 		<br/><br/>
 		<h1>{SolveEquation(equation).toFixed(2)}</h1>
