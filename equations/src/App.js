@@ -16,9 +16,21 @@ function EquationGroup(p) {
 	return <>
 	<span style={{fontSize:"24px"}}>(</span>
 		<div style={{display:"inline-block",border:"3px solid green"}}>
-			<button style={{backgroundColor:"blue",color:"white"}}>Add Value</button>
-			<button style={{backgroundColor:"green",color:"white"}}>Add Group</button>
-			<button style={{backgroundColor:"beige",color:"black"}}>Add Operator</button>
+			<button style={{backgroundColor:"blue",color:"white"}} onClick={()=>{
+				var eqArr=[...myArr]
+				eqArr.push(Object.keys(data)[0])
+				setMyArr(eqArr)
+			}}>Add Value</button>
+			<button style={{backgroundColor:"green",color:"white"}} onClick={()=>{
+				var eqArr=[...myArr]
+				eqArr.push([])
+				setMyArr(eqArr)
+			}}>Add Group</button>
+			<button style={{backgroundColor:"beige",color:"black"}} onClick={()=>{
+				var eqArr=[...myArr]
+				eqArr.push("+")
+				setMyArr(eqArr)
+			}}>Add Operator</button>
 			<br/>
 			{arr.map((eq,i)=>Array.isArray(eq)?<EquationGroup equation={myArr} setEquation={setMyArr} data={data} arr={eq} key={i} id={i}/>:eq==="×"||eq==="-"||eq==="+"||eq==="÷"?<EquationOperator equation={myArr} setEquation={setMyArr} data={data} operator={eq} key={i} id={i}/>:<EquationValue equation={myArr} setEquation={setMyArr} data={data} val={eq} key={i} id={i}/>)}
 		</div>
@@ -75,25 +87,29 @@ function Equation(p) {
 			}
 		}
 		//Multiplication and Division first.
-		for (i=0;i<newEq.length-1;i++) {
-			if (newEq[i]==="×") {
+		for (i=1;i<newEq.length-1;i++) {
+			if (newEq[i]==="×"&&newEq[i+1]!=="×"&&newEq[i+1]!=="÷"&&newEq[i+1]!=="-"&&newEq[i+1]!=="+"
+			&&newEq[i-1]!=="×"&&newEq[i-1]!=="÷"&&newEq[i-1]!=="-"&&newEq[i-1]!=="+") {
 				var product = Number(typeof newEq[i-1]==="number"?newEq[i-1]:data[newEq[i-1]])*Number(typeof newEq[i+1]==="number"?newEq[i+1]:data[newEq[i+1]])
 				newEq.splice(i-1,3,product)
 				i--
 			} else
-			if (newEq[i]==="÷") {
+			if (newEq[i]==="÷"&&newEq[i+1]!=="×"&&newEq[i+1]!=="÷"&&newEq[i+1]!=="-"&&newEq[i+1]!=="+"
+			&&newEq[i-1]!=="×"&&newEq[i-1]!=="÷"&&newEq[i-1]!=="-"&&newEq[i-1]!=="+") {
 				var quotient = Number(typeof newEq[i-1]==="number"?newEq[i-1]:data[newEq[i-1]])/Number(typeof newEq[i+1]==="number"?newEq[i+1]:data[newEq[i+1]])
 				newEq.splice(i-1,3,quotient)
 				i--
 			}
 		}
-		for (i=0;i<newEq.length-1;i++) {
-			if (newEq[i]==="+") {
+		for (i=1;i<newEq.length-1;i++) {
+			if (newEq[i]==="+"&&newEq[i+1]!=="×"&&newEq[i+1]!=="÷"&&newEq[i+1]!=="-"&&newEq[i+1]!=="+"
+			&&newEq[i-1]!=="×"&&newEq[i-1]!=="÷"&&newEq[i-1]!=="-"&&newEq[i-1]!=="+") {
 				var sum = Number(typeof newEq[i-1]==="number"?newEq[i-1]:data[newEq[i-1]])+Number(typeof newEq[i+1]==="number"?newEq[i+1]:data[newEq[i+1]])
 				newEq.splice(i-1,3,sum)
 				i--
 			} else
-			if (newEq[i]==="-") {
+			if (newEq[i]==="-"&&newEq[i+1]!=="×"&&newEq[i+1]!=="÷"&&newEq[i+1]!=="-"&&newEq[i+1]!=="+"
+			&&newEq[i-1]!=="×"&&newEq[i-1]!=="÷"&&newEq[i-1]!=="-"&&newEq[i-1]!=="+") {
 				var difference = Number(typeof newEq[i-1]==="number"?newEq[i-1]:data[newEq[i-1]])-Number(typeof newEq[i+1]==="number"?newEq[i+1]:data[newEq[i+1]])
 				newEq.splice(i-1,3,difference)
 				i--
@@ -103,9 +119,21 @@ function Equation(p) {
 	}
 	
 	return <>
-		<button style={{backgroundColor:"blue",color:"white"}}>Add Value</button>
-		<button style={{backgroundColor:"green",color:"white"}}>Add Group</button>
-		<button style={{backgroundColor:"beige",color:"black"}}>Add Operator</button>
+		<button style={{backgroundColor:"blue",color:"white"}} onClick={()=>{
+			var eqArr=[...equation]
+			eqArr.push(Object.keys(data)[0])
+			setEquation(eqArr)
+		}}>Add Value</button>
+		<button style={{backgroundColor:"green",color:"white"}} onClick={()=>{
+			var eqArr=[...equation]
+			eqArr.push([])
+			setEquation(eqArr)
+		}}>Add Group</button>
+		<button style={{backgroundColor:"beige",color:"black"}} onClick={()=>{
+			var eqArr=[...equation]
+			eqArr.push("+")
+			setEquation(eqArr)
+		}}>Add Operator</button>
 		<br/><br/>
 		
 		{equation.map((eq,i)=>Array.isArray(eq)?<EquationGroup equation={equation} setEquation={setEquation} data={data} arr={eq} key={i} id={i}/>:eq==="×"||eq==="-"||eq==="+"||eq==="÷"?<EquationOperator equation={equation} setEquation={setEquation} data={data} operator={eq} key={i} id={i}/>:<EquationValue equation={equation} setEquation={setEquation} data={data} val={eq} key={i} id={i}/>)}
