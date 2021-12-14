@@ -3,8 +3,27 @@ import {useEffect,useState} from 'react';
 import './App.css';
 
 function EditorControls(p) {
+	const {equation,setEquation,id} = p
 	return <>
-	<span className="mouseover" style={{position:"absolute",bottom:0,left:0}}>{"<"}</span><span className="mouseover" style={{position:"absolute",bottom:0,right:0}}>{">"}</span>
+	{id>0&&<span className="mouseover" style={{position:"absolute",bottom:0,left:0}} onClick={()=>{
+		var eqArr = [...equation]
+		var oldVal = eqArr[id-1]
+		eqArr[id-1] = eqArr[id]
+		eqArr[id] = oldVal
+		setEquation(eqArr)
+	}}>{"<"}</span>}
+	{id<equation.length-1&&<span className="mouseover" style={{position:"absolute",bottom:0,right:0}} onClick={()=>{
+		var eqArr = [...equation]
+		var oldVal = eqArr[id+1]
+		eqArr[id+1] = eqArr[id]
+		eqArr[id] = oldVal
+		setEquation(eqArr)
+	}}>{">"}</span>}
+	<span className="mouseover" style={{color:"maroon",position:"absolute",top:0,right:0}} onClick={()=>{
+		var eqArr = [...equation]
+		eqArr.splice(id,1)
+		setEquation(eqArr)
+	}}>{"x"}</span>
 	</>
 }
 
@@ -41,7 +60,7 @@ function EquationGroup(p) {
 			<br/>
 			{arr.map((eq,i)=>Array.isArray(eq)?<EquationGroup equation={myArr} setEquation={setMyArr} data={data} arr={eq} key={i} id={i}/>:eq==="×"||eq==="-"||eq==="+"||eq==="÷"?<EquationOperator equation={myArr} setEquation={setMyArr} data={data} operator={eq} key={i} id={i}/>:<EquationValue equation={myArr} setEquation={setMyArr} data={data} val={eq} key={i} id={i}/>)}
 		</div>
-	<EditorControls/>
+		<EditorControls equation={equation} setEquation={setEquation} id={id}/>
 	</div>
 	<span style={{fontSize:"24px"}}>)</span>
 	</>
@@ -58,9 +77,11 @@ function EquationOperator(p) {
 		setEquation(eqArr)
 	},[op])
 	
-	return <select value={op} defaultValue={operator} onChange={(ev)=>{setOp(ev.currentTarget.value)}}>
+	return <div style={{position:"relative",display:"inline-block",paddingLeft:"12px",paddingRight:"12px",paddingTop:"10px"}}><select value={op} defaultValue={operator} onChange={(ev)=>{setOp(ev.currentTarget.value)}}>
 		{["+","-","×","÷"].map((sign)=><option key={sign} value={sign}>{sign}</option>)}
 	</select>
+	<EditorControls equation={equation} setEquation={setEquation} id={id}/>
+	</div>
 }
 
 function EquationValue(p) {
@@ -74,12 +95,13 @@ function EquationValue(p) {
 		setEquation(eqArr)
 	},[item])
 	
-	return <div style={{display:"inline-block",border:"1px solid black"}}>
+	return <div style={{position:"relative",display:"inline-block",border:"1px solid black",paddingTop:"16px"}}>
 	<select value={item} defaultValue={val} onChange={(ev)=>{setItem(ev.currentTarget.value)}}>
 		{Object.keys(data).map((key)=><option key={key} value={key}>{key}</option>)}
 	</select>
 	<br/>
 	{data[val]}
+	<EditorControls equation={equation} setEquation={setEquation} id={id}/>
 	</div>
 }
 
