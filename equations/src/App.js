@@ -28,7 +28,7 @@ function EditorControls(p) {
 }
 
 function EquationGroup(p) {
-	const {equation,setEquation,data,arr,key,id} = p
+	const {equation,setEquation,data,arr,id} = p
 	
 	const [myArr,setMyArr] = useState(arr)
 	
@@ -67,7 +67,7 @@ function EquationGroup(p) {
 }
 
 function EquationOperator(p) {
-	const {equation,setEquation,data,operator,key,id} = p
+	const {equation,setEquation,operator,id} = p
 	
 	const [op,setOp] = useState(operator)
 	
@@ -77,7 +77,7 @@ function EquationOperator(p) {
 		setEquation(eqArr)
 	},[op])
 	
-	return <div style={{position:"relative",display:"inline-block",paddingLeft:"12px",paddingRight:"12px",paddingTop:"10px"}}><select style={{fontSize:"24px"}} value={op} defaultValue={operator} onChange={(ev)=>{setOp(ev.currentTarget.value)}}>
+	return <div style={{position:"relative",display:"inline-block",paddingLeft:"12px",paddingRight:"12px",paddingTop:"10px"}}><select style={{fontSize:"24px"}} value={op} onChange={(ev)=>{setOp(ev.currentTarget.value)}}>
 		{["+","-","×","÷","^"].map((sign)=><option key={sign} value={sign}>{sign}</option>)}
 	</select>
 	<EditorControls equation={equation} setEquation={setEquation} id={id}/>
@@ -85,7 +85,7 @@ function EquationOperator(p) {
 }
 
 function EquationValue(p) {
-	const {equation,setEquation,data,val,key,id} = p
+	const {equation,setEquation,data,val,id} = p
 	
 	const [item,setItem] = useState(val)
 	
@@ -96,7 +96,7 @@ function EquationValue(p) {
 	},[item])
 	
 	return <div style={{position:"relative",display:"inline-block",border:"1px solid black",paddingTop:"16px"}}>
-	<select value={item} defaultValue={val} onChange={(ev)=>{setItem(ev.currentTarget.value)}}>
+	<select value={item} onChange={(ev)=>{setItem(ev.currentTarget.value)}}>
 		{Object.keys(data).map((key)=><option key={key} value={key}>{key}</option>)}
 	</select>
 	<br/>
@@ -177,9 +177,11 @@ function Equation(p) {
 		<br/><br/>
 		
 		{equation.map((eq,i)=>Array.isArray(eq)?<EquationGroup equation={equation} setEquation={setEquation} data={data} arr={eq} key={i} id={i}/>:eq==="×"||eq==="-"||eq==="+"||eq==="÷"||eq==="^"?<EquationOperator equation={equation} setEquation={setEquation} data={data} operator={eq} key={i} id={i}/>:<EquationValue equation={equation} setEquation={setEquation} data={data} val={eq} key={i} id={i}/>)}
-		
+	
 		<br/><br/>
 		<h1>{SolveEquation(equation).toFixed(2)}</h1>
+		<br/><br/>
+		{JSON.stringify(equation)}
 	</>
 }
 
@@ -192,8 +194,8 @@ function EditBox(p) {
 		setVal(v)
 	},[v])
 	
-	return <input type="text" value={v} defaultValue={val} onChange={(ev)=>{setV(ev.currentTarget.value)}}/>
-}
+	return <input type="text" value={v} onChange={(ev)=>{setV(ev.currentTarget.value)}}/>
+} 
 
 function ValueEditor(p) {
 	const {lv,setLv,atk,setAtk,def,setDef,elementalBonus,setElementalBonus} = p
