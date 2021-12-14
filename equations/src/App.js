@@ -7,15 +7,29 @@ function EquationGroup(p) {
 	
 	const [myArr,setMyArr] = useState(arr)
 	
+	useEffect(()=>{
+		var eqArr = [...equation]
+		eqArr[id] = [...myArr]
+		setEquation(eqArr)
+	},[myArr])
+	
 	return <>
-	<span style={{fontSize:"24"}}>(</span>
+	<span style={{fontSize:"24px"}}>(</span>
 	{arr.map((eq,i)=>Array.isArray(eq)?<EquationGroup equation={myArr} setEquation={setMyArr} data={data} arr={eq} key={i} id={i}/>:eq==="×"||eq==="-"||eq==="+"||eq==="÷"?<EquationOperator equation={myArr} setEquation={setMyArr} data={data} operator={eq} key={i} id={i}/>:<EquationValue equation={myArr} setEquation={setMyArr} data={data} val={eq} key={i} id={i}/>)}
-	<span style={{fontSize:"24"}}>)</span>
+	<span style={{fontSize:"24px"}}>)</span>
 	</>
 }
 
 function EquationOperator(p) {
 	const {equation,setEquation,data,operator,key,id} = p
+	
+	const [op,setOp] = useState(operator)
+	
+	useEffect(()=>{
+		var eqArr = [...equation]
+		eqArr[id] = op
+		setEquation(eqArr)
+	},[op])
 	
 	return <>
 	{operator}
@@ -25,9 +39,19 @@ function EquationOperator(p) {
 function EquationValue(p) {
 	const {equation,setEquation,data,val,key,id} = p
 	
-	return <>
+	const [item,setItem] = useState(val)
+	
+	useEffect(()=>{
+		var eqArr = [...equation]
+		eqArr[id] = item
+		setEquation(eqArr)
+	},[item])
+	
+	return <div style={{display:"inline-block",border:"1px solid black"}}>
+	{val}
+	<br/>
 	{data[val]}
-	</>
+	</div>
 }
 
 function Equation(p) {
