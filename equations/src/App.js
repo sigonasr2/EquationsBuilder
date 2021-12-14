@@ -15,7 +15,13 @@ function EquationGroup(p) {
 	
 	return <>
 	<span style={{fontSize:"24px"}}>(</span>
-	{arr.map((eq,i)=>Array.isArray(eq)?<EquationGroup equation={myArr} setEquation={setMyArr} data={data} arr={eq} key={i} id={i}/>:eq==="×"||eq==="-"||eq==="+"||eq==="÷"?<EquationOperator equation={myArr} setEquation={setMyArr} data={data} operator={eq} key={i} id={i}/>:<EquationValue equation={myArr} setEquation={setMyArr} data={data} val={eq} key={i} id={i}/>)}
+		<div style={{display:"inline-block",border:"3px solid green"}}>
+			<button style={{backgroundColor:"blue",color:"white"}}>Add Value</button>
+			<button style={{backgroundColor:"green",color:"white"}}>Add Group</button>
+			<button style={{backgroundColor:"beige",color:"black"}}>Add Operator</button>
+			<br/>
+			{arr.map((eq,i)=>Array.isArray(eq)?<EquationGroup equation={myArr} setEquation={setMyArr} data={data} arr={eq} key={i} id={i}/>:eq==="×"||eq==="-"||eq==="+"||eq==="÷"?<EquationOperator equation={myArr} setEquation={setMyArr} data={data} operator={eq} key={i} id={i}/>:<EquationValue equation={myArr} setEquation={setMyArr} data={data} val={eq} key={i} id={i}/>)}
+		</div>
 	<span style={{fontSize:"24px"}}>)</span>
 	</>
 }
@@ -31,9 +37,9 @@ function EquationOperator(p) {
 		setEquation(eqArr)
 	},[op])
 	
-	return <>
-	{operator}
-	</>
+	return <select value={op} defaultValue={operator} onChange={(ev)=>{setOp(ev.currentTarget.value)}}>
+		{["+","-","×","÷"].map((sign)=><option key={sign} value={sign}>{sign}</option>)}
+	</select>
 }
 
 function EquationValue(p) {
@@ -48,7 +54,9 @@ function EquationValue(p) {
 	},[item])
 	
 	return <div style={{display:"inline-block",border:"1px solid black"}}>
-	{val}
+	<select value={item} defaultValue={val} onChange={(ev)=>{setItem(ev.currentTarget.value)}}>
+		{Object.keys(data).map((key)=><option key={key} value={key}>{key}</option>)}
+	</select>
 	<br/>
 	{data[val]}
 	</div>
