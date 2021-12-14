@@ -107,7 +107,7 @@ function EquationValue(p) {
 
 function Equation(p) {
 	const {data} = p
-	const [equation,setEquation]=useState([["data2"],"+","data3"])
+	const [equation,setEquation]=useState([["atk"],"×","elementalBonus"])
 	
 	function SolveEquation(eq) {
 		var newEq = [...eq]
@@ -170,22 +170,43 @@ function Equation(p) {
 		{equation.map((eq,i)=>Array.isArray(eq)?<EquationGroup equation={equation} setEquation={setEquation} data={data} arr={eq} key={i} id={i}/>:eq==="×"||eq==="-"||eq==="+"||eq==="÷"?<EquationOperator equation={equation} setEquation={setEquation} data={data} operator={eq} key={i} id={i}/>:<EquationValue equation={equation} setEquation={setEquation} data={data} val={eq} key={i} id={i}/>)}
 		
 		<br/><br/>
-		<h1>{SolveEquation(equation)}</h1>
+		<h1>{SolveEquation(equation).toFixed(2)}</h1>
+	</>
+}
+
+function EditBox(p) {
+	const {val,setVal} = p
+	
+	const [v,setV] = useState(val)
+	
+	useEffect(()=>{
+		setVal(v)
+	},[v])
+	
+	return <input type="text" value={v} defaultValue={val} onChange={(ev)=>{setV(ev.currentTarget.value)}}/>
+}
+
+function ValueEditor(p) {
+	const {lv,setLv,atk,setAtk,def,setDef,elementalBonus,setElementalBonus} = p
+	
+	return <><b>LV</b> <EditBox val={lv} setVal={setLv}/><br/>
+	<b>ATK</b> <EditBox val={atk} setVal={setAtk}/><br/>
+	<b>ENEMY DEF</b> <EditBox val={def} setVal={setDef}/><br/>
+	<b>ENEMY ELEMENTAL BONUS</b> <EditBox val={elementalBonus} setVal={setElementalBonus}/><br/>
 	</>
 }
 
 function App() {
-	const fieldData = {
-		data1:84,
-		data2:49,
-		data3:3.5,
-		data4:67
-	}
+	const [lv,setLv] = useState(4)
+	const [atk,setAtk] = useState(84)
+	const [def,setDef] = useState(16)
+	const [elementalBonus,setElementalBonus] = useState(0.4)
 	
   return (
     <div className="App">
+		<ValueEditor lv={lv} setLv={setLv} atk={atk} setAtk={setAtk} def={def} setDef={setDef} elementalBonus={elementalBonus} setElementalBonus={setElementalBonus}/>
 		<hr/>
-		<Equation data={fieldData}/>
+		<Equation data={{lv:lv,atk:atk,def:def,elementalBonus:elementalBonus}}/>
     </div>
   );
 }
