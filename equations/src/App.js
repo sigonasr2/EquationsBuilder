@@ -5,11 +5,13 @@ import './App.css';
 function Equation(p) {
 	const {data} = p
 	const [operator,setOperator] = useState("disabled")
-	const [field,setField] = useState(0)
+	const [field,setField] = useState(Object.keys(data)[0])
 	
-	return <><select>
-	{Object.keys(data).map((key)=><option>{key}</option>)}
-	</select></>
+	return <div style={{display:"inline-block",border:"1px solid black"}}>
+	<select onChange={(ev)=>{setField(ev.currentTarget.value)}}>
+	{Object.keys(data).map((key)=><option value={key}>{key}</option>)}
+	</select><br/>
+	{data[field]}</div>
 }
 
 function EquationBuilder(p) {
