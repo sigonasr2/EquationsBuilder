@@ -2,9 +2,37 @@ import logo from './logo.svg';
 import {useEffect,useState} from 'react';
 import './App.css';
 
-function Equation() {
+function EquationGroup(p) {
+	const {equation,setEquation,data,arr,key,id} = p
 	
-	const [equation,setEquation]=useState([[6],"+"])
+	const [myArr,setMyArr] = useState(arr)
+	
+	return <>
+	<span style={{fontSize:"24"}}>(</span>
+	{arr.map((eq,i)=>Array.isArray(eq)?<EquationGroup equation={myArr} setEquation={setMyArr} data={data} arr={eq} key={i} id={i}/>:eq==="×"||eq==="-"||eq==="+"||eq==="÷"?<EquationOperator equation={myArr} setEquation={setMyArr} data={data} operator={eq} key={i} id={i}/>:<EquationValue equation={myArr} setEquation={setMyArr} data={data} val={eq} key={i} id={i}/>)}
+	<span style={{fontSize:"24"}}>)</span>
+	</>
+}
+
+function EquationOperator(p) {
+	const {equation,setEquation,data,operator,key,id} = p
+	
+	return <>
+	{operator}
+	</>
+}
+
+function EquationValue(p) {
+	const {equation,setEquation,data,val,key,id} = p
+	
+	return <>
+	{data[val]}
+	</>
+}
+
+function Equation(p) {
+	const {data} = p
+	const [equation,setEquation]=useState([["data2"],"+","data3"])
 	
 	function SolveEquation(eq) {
 		var newEq = [...eq]
@@ -17,32 +45,40 @@ function Equation() {
 		//Multiplication and Division first.
 		for (i=0;i<newEq.length-1;i++) {
 			if (newEq[i]==="×") {
-				var product = Number(newEq[i-1])*Number(newEq[i+1])
+				var product = Number(typeof newEq[i-1]==="number"?newEq[i-1]:data[newEq[i-1]])*Number(typeof newEq[i+1]==="number"?newEq[i+1]:data[newEq[i+1]])
 				newEq.splice(i-1,3,product)
 				i--
 			} else
 			if (newEq[i]==="÷") {
-				var quotient = Number(newEq[i-1])/Number(newEq[i+1])
+				var quotient = Number(typeof newEq[i-1]==="number"?newEq[i-1]:data[newEq[i-1]])/Number(typeof newEq[i+1]==="number"?newEq[i+1]:data[newEq[i+1]])
 				newEq.splice(i-1,3,quotient)
 				i--
 			}
 		}
 		for (i=0;i<newEq.length-1;i++) {
 			if (newEq[i]==="+") {
-				var sum = Number(newEq[i-1])+Number(newEq[i+1])
+				var sum = Number(typeof newEq[i-1]==="number"?newEq[i-1]:data[newEq[i-1]])+Number(typeof newEq[i+1]==="number"?newEq[i+1]:data[newEq[i+1]])
 				newEq.splice(i-1,3,sum)
 				i--
 			} else
 			if (newEq[i]==="-") {
-				var difference = Number(newEq[i-1])-Number(newEq[i+1])
+				var difference = Number(typeof newEq[i-1]==="number"?newEq[i-1]:data[newEq[i-1]])-Number(typeof newEq[i+1]==="number"?newEq[i+1]:data[newEq[i+1]])
 				newEq.splice(i-1,3,difference)
 				i--
 			}
 		}
-		return Number(newEq[0])
+		return typeof newEq[0]==="number"?newEq[0]:Number(data[newEq[0]])
 	}
 	
 	return <>
+		<button style={{backgroundColor:"blue",color:"white"}}>Add Value</button>
+		<button style={{backgroundColor:"green",color:"white"}}>Add Group</button>
+		<button style={{backgroundColor:"beige",color:"black"}}>Add Operator</button>
+		<br/><br/>
+		
+		{equation.map((eq,i)=>Array.isArray(eq)?<EquationGroup equation={equation} setEquation={setEquation} data={data} arr={eq} key={i} id={i}/>:eq==="×"||eq==="-"||eq==="+"||eq==="÷"?<EquationOperator equation={equation} setEquation={setEquation} data={data} operator={eq} key={i} id={i}/>:<EquationValue equation={equation} setEquation={setEquation} data={data} val={eq} key={i} id={i}/>)}
+		
+		<br/><br/>
 		<h1>{SolveEquation(equation)}</h1>
 	</>
 }
@@ -58,7 +94,7 @@ function App() {
   return (
     <div className="App">
 		<hr/>
-		<Equation/>
+		<Equation data={fieldData}/>
     </div>
   );
 }
