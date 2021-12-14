@@ -2,6 +2,12 @@ import logo from './logo.svg';
 import {useEffect,useState} from 'react';
 import './App.css';
 
+function EditorControls(p) {
+	return <>
+	<span className="mouseover" style={{position:"absolute",bottom:0,left:0}}>{"<"}</span><span className="mouseover" style={{position:"absolute",bottom:0,right:0}}>{">"}</span>
+	</>
+}
+
 function EquationGroup(p) {
 	const {equation,setEquation,data,arr,key,id} = p
 	
@@ -15,6 +21,7 @@ function EquationGroup(p) {
 	
 	return <>
 	<span style={{fontSize:"24px"}}>(</span>
+	<div style={{position:"relative",display:"inline-block",paddingLeft:"12px",paddingRight:"12px"}}>
 		<div style={{display:"inline-block",border:"3px solid green"}}>
 			<button style={{backgroundColor:"blue",color:"white"}} onClick={()=>{
 				var eqArr=[...myArr]
@@ -34,6 +41,8 @@ function EquationGroup(p) {
 			<br/>
 			{arr.map((eq,i)=>Array.isArray(eq)?<EquationGroup equation={myArr} setEquation={setMyArr} data={data} arr={eq} key={i} id={i}/>:eq==="×"||eq==="-"||eq==="+"||eq==="÷"?<EquationOperator equation={myArr} setEquation={setMyArr} data={data} operator={eq} key={i} id={i}/>:<EquationValue equation={myArr} setEquation={setMyArr} data={data} val={eq} key={i} id={i}/>)}
 		</div>
+	<EditorControls/>
+	</div>
 	<span style={{fontSize:"24px"}}>)</span>
 	</>
 }
